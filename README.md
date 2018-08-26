@@ -1,58 +1,70 @@
 ## Summary
 
-This repo is a practice of using Python Flask Framework combined with MySQL database to build a simple guestbook app.
-This app is aimed to save guests' comments when guest press save button, and show all the saved results on the landing page.
+This repo is a practice of using JavaScript to build a RSVP app, the scenario of using this app is that you plan to invite people to come for a kind of activity, and you want to ensure who will present.
 
-*All the step is followed by [youtube channel](https://www.youtube.com/watch?v=mD4KFDmusCc&list=PLXmMXHVSvS-AjwTOtiW1DXFYTgUlrUmHV) created by Pretty Printed.*
+*All the step is followed by [Beginning JavaScript Course](https://teamtreehouse.com/tracks/beginning-javascript) in Treehouse.*
 
-## MySQL database
+## Functions
 
-MySQL database is the most common representative database using SQL (Structure Query Language), and we gonna use this database to accomplish this simple app.
+This app includes three function
 
-If you want to know more about SQL, here is a link refers to SQL example in this [website](http://www.codedata.com.tw/database/mysql-tutorial-6-crud-maintenance/) writen in Traditional Chinese.
+ - Add New Invitee
+ - Edit/Remove the invitee
+ - Filter the invitee who will present
 
 ## Usage
 
-Download the repo, and under the directory get into Python shell:
-
-    from guestbook import db
-    db.create_all()
-
-Exit the shell, under the directory run:
-
-    python guestbook.py
-
-You will see the landing page.
+Download the repo, and open the html file directly.
 
 <figure style="text-align: center;">
-    <img src="README_img/LandingPage1.png" alt="Landing Page" style="width: 80%; height: 80%"/>
+    <img src="README_img/LandingPage.png" alt="Landing Page" style="width: 100%; height: 100%"/>
     <figcaption style="display: block;">Landing Page</figcaption>
 </figure>
 
-By clicking the **Sign the Guest Book** Button, guest can Sign on the Guest Book with Name and Comment (With no Validation).
+
+#### Add New Invitee
 
 <figure style="text-align: center;">
-    <img src="README_img/SignupPage.png" alt="SignUp Page" style="width: 50%; height: 50%"/>
-    <figcaption style="display: block;">SignUp Page</figcaption>
+    <img src="README_img/AddNewInvitee1.png" alt="Add new invitee" style="width: 100%; height: 100%"/>
+    <figcaption style="display: block;">Add new invitee</figcaption>
 </figure>
 
-By entering name "Brady" and comment "This is my first comment" and press the Sign button, guest will back to the landing page with new comment show below the heading.
+By clicking the **Submit** Button, the new invitee will be added.
 
 <figure style="text-align: center;">
-    <img src="README_img/LandingPage2.png" alt="Landing Page" style="width: 80%; height: 80%"/>
-    <figcaption style="display: block;">Landing Page</figcaption>
+    <img src="README_img/AddNewInvitee2.png" alt="Add new invitee" style="width: 100%; height: 100%"/>
+    <figcaption style="display: block;">New invitee is been added</figcaption>
 </figure>
 
-You can easily upload new comment to the guestbook, and see all the comments on the landing page.
+#### Edit/Remove the invitee
 
-## Architecture
+By clicking the **Edit** Button, you can edit the invitee.
 
-All the logic are placed in the guestbook.py, so we will majorly discuss the guestbook.py.
-
-In the landing page (index.html), we can click the link to the sign up page (sign.html). Then, after finish the form and press 【Sign】, we will send a post request to '/process' route. This route will save the name and comment to database and redirect the guest to the landing page (index.html). Finally, we can see the comment on the landing page and other saved comments.
 <figure style="text-align: center;">
-    <img src="README_img/Architecture.jpg" alt="The architecture of this app" style="width: 80%; height: 80%"/>
-    <figcaption style="display: block;">The architecture of this app</figcaption>
+    <img src="README_img/EditInvitee1.png" alt="Edit invitee" style="width: 100%; height: 100%"/>
+    <figcaption style="display: block;">Edit Invitee</figcaption>
+</figure>
+
+Save your edit, and the name will immediately change.
+
+<figure style="text-align: center;">
+    <img src="README_img/EditInvitee2.png" alt="Edit Invitee" style="width: 100%; height: 100%"/>
+    <figcaption style="display: block;">After edit invitee</figcaption>
+</figure>
+
+#### Filter the invitee who will present
+
+If you have some invitee already confirmed to come to the activity and check the checkbox for them.
+<figure style="text-align: center;">
+    <img src="README_img/ConfirmedInvitee1.png" alt="Confirmed invitee" style="width: 100%; height: 100%"/>
+    <figcaption style="display: block;">Edit Invitee</figcaption>
+</figure>
+
+You can view all the confirmed invitee by clicking "Hide those who haven't responded" to see all the confirmed invitee.
+
+<figure style="text-align: center;">
+    <img src="README_img/ConfirmedInvitee2.png" alt="Confirmed invitee" style="width: 100%; height: 100%"/>
+    <figcaption style="display: block;">After edit invitee</figcaption>
 </figure>
 
 ## Code
@@ -60,86 +72,158 @@ In the landing page (index.html), we can click the link to the sign up page (sig
 #### Setting
 ------------------------------------------------------------------------
 
-guestbook.py
+First we put the app.js script before \</body> tag to include js file.
+
+index.html
+
 ```
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/flask_guestbook'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
+  ...
+  <script type="text/javascript" src="app.js"></script>
+</body>
 ```
 
-First we start an app initialized by Flask Framework `app = Flask(__name__)`
-
-In order to connect to the database, we specify the database path with prefix `mysql+pymysql://` Put the database username and password `root:root` Followed by hostname, port and MySQL table name `localhost:3306/flask_guestbook`
-
-Then we can initialize the db by `db = SQLAlchemy(app)`
-
-(Optional) Disable unneccessary warning by `app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False`
-
-#### Schema Design
+#### Initialize
 ------------------------------------------------------------------------
 
-guestbook.py
+app.js
 ```
-class Comments(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))
-    comment = db.Column(db.String(1000))
+const form = document.getElementById('registrar');
+const input = form.querySelector('input');
+
+const mainDiv = document.querySelector('.main');
+const ul = document.getElementById('invitedList');
+
+const div = document.createElement('div');
+const filterLabel = document.createElement('label');
+const filterCheckBox = document.createElement('input');
 ```
 
-id column will be the primary key with Integer data type.
-name and comment column will be the String data type with 20 and 1000 characters.
+We first get all the element that we gonna to use.
 
-#### index route - Show the Landing Page
+#### Add New Invitee
 ------------------------------------------------------------------------
 
-guestbook.py
+app.js
 ```
-@app.route('/')
-def index():
-    result = Comments.query.all()
-    return render_template('index.html', result=result)
+function createLI(text) {
+function createElement(elementName, property, value) {
+    const element = document.createElement(elementName);
+    element[property] = value;
+    return element;
+}
+
+function appendToLI(elementName, property, value) {
+    const element = createElement(elementName, property, value);
+    li.appendChild(element);
+    return element;
+}
+
+const li = document.createElement('li');
+appendToLI('span', 'textContent', text);
+appendToLI('label', 'textContent', 'Confirmed')
+    .appendChild(createElement('input', 'type', 'checkbox'));
+appendToLI('button', 'textContent', 'edit');
+appendToLI('button', 'textContent', 'remove');
+return li;
+}
+
+form.addEventListener('submit', (e) => {
+e.preventDefault();
+const text = input.value;
+input.value = '';
+const li = createLI(text);
+ul.appendChild(li);
+});
 ```
 
-`Comment.query.all()` will fetch all the data from Comments table.
-Use `render_remplate` will go the the specified template, and we can send variables in the parathensis after first param.
+`e.preventDefault();` will prevent the default submit function which will keep refresh results invitee addition failure.
 
-In the route we will send all the comments queried from comments table to index.html template.
-
-#### sign route - Show the Sing Up Page
+#### Edit/Remove the invitee
 ------------------------------------------------------------------------
 
-guestbook.py
+app.js
 ```
-@app.route('/sign')
-def sign():
-    return render_template('sign.html')
+ul.addEventListener('click', (e) => {
+if (e.target.tagName === 'BUTTON') {
+    const button = e.target;
+    const li = button.parentNode;
+    const ul = li.parentNode;
+    const action = button.textContent;
+    const nameActions = {
+    remove: () => {
+        ul.removeChild(li);
+    },
+    edit: () => {
+        const span = li.firstElementChild;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = span.textContent;
+        li.insertBefore(input, span);
+        li.removeChild(span);
+        button.textContent = 'save';
+    },
+    save: () => {
+        const input = li.firstElementChild;
+        const span = document.createElement('span');
+        span.textContent = input.value;
+        li.insertBefore(span, input);
+        li.removeChild(input);
+        button.textContent = 'edit';
+    }
+    };
+
+    // select and run action in button's name
+    nameActions[action]();
+}
 ```
 
-#### process route - Process the comment and save to db
+`nameActions[action]()` is a precise way to use first-class function to call all the function instance one time.
+
+####  Filter the invitee who will present
 ------------------------------------------------------------------------
 
-guestbook.py
+app.js
 ```
-@app.route('/process', methods=['POST'])
-def process():
-    name = request.form['name']
-    comment = request.form['comment']
-
-    signature = Comments(name=name, comment=comment)
-    db.session.add(signature)
-    db.session.commit()
-
-    return redirect(url_for('index'))
+filterCheckBox.addEventListener('change', (e) => {
+const isChecked = e.target.checked;
+const lis = ul.children;
+if(isChecked) {
+    for (let i = 0; i < lis.length; i += 1) {
+    let li = lis[i];
+    if (li.className === 'responded') {
+        li.style.display = '';
+    } else {
+        li.style.display = 'none';
+    }
+    }
+} else {
+    for (let i = 0; i < lis.length; i += 1) {
+    let li = lis[i];
+    li.style.display = '';
+    }
+}
+});
 ```
 
-We will receive the name and comment from the form POST request.
+This will loop through all the invitee to find out if it gets the attribute `responded`, if yes, the display style will set to empty; if not, will set to `none`.
 
-Save the comment by `Comments(name=name, comment=comment)` as signature, put the comment to database with `db.sesstion.add(signature)` followed by `db.session.commit`. 
-In order to see all the results, we have to query all the comments and print on the landing page. 
-index() view function have already do this, so we can use `redirect(url_for(index))` to go back to index() view function. Then we can see all the comments after Sign up the comment.
+app.js
+```
+ul.addEventListener('change', (e) => {
+const checkbox = event.target;
+const checked = checkbox.checked;
+const listItem = checkbox.parentNode.parentNode;
+
+if (checked) {
+    listItem.className = 'responded';
+} else {
+    listItem.className = '';
+}
+});
+```
+
+This code block means that everytime you change the invitee confirmed status, it will add/remove the attribute 'responded'.
 
 ## Conclusion
 
-In this project, we connect MySQL with guestbook page. Save each comment when guest leaving the comment on the sign up page. Finally, show all the comments on the landing page.
+In this project, we use JavaScript to add/edit/remove html element in the html file. For me, I thimk the most valuable part of this project is the css file, I believe I can use it in the future.
